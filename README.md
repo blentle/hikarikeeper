@@ -17,7 +17,7 @@ Supporting these uses led us to a design with a number of unique elements, more 
 Hikarikeeper allows distributed processes to coordinate with each other through a shared hierarchical name space of data registers much like a file system,Unlike normal file systems Hikarikeeper provides its clients with high throughput, low latency, highly available,strong consistent to the registers.
 The performance aspects of Hikarikeeper allow it to be used in large distributed systems.
 
-![avatar](../images/)
+![avatar](./images/Hikarikeeper-Architecture.png)
 
 # Roadmap
 Now it's time to dig into the full Hikarikeeper API and other guides.
