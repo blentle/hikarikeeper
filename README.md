@@ -2,7 +2,7 @@
 + provide leader election base on Raft
 + store metadata into rocksdb instead of Map
 + strong consistency insurance
-+ higher concurrency than zookeeper,etc, etc...
++ higher concurrency than zookeeper, etcd, etc...
 # Design Motivation
 We designed Hikarikeeper to be able to act as a coordination platform for store large scale metadata.
 
