@@ -12,9 +12,6 @@
     <packaging>pom</packaging>
 
     <name>hikarikeeper</name>
-    <description>
-        Curator is a set of Java libraries that make using Apache ZooKeeper much easier.
-    </description>
     <url>wait...</url>
     <inceptionYear>2022</inceptionYear>
 
