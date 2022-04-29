@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    todo: add Licensed
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.hikarikeeper</groupId>
+    <artifactId>hikarikeeper</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>hikarikeeper</name>
+    <description>
+        Curator is a set of Java libraries that make using Apache ZooKeeper much easier.
+    </description>
+    <url>wait...</url>
+    <inceptionYear>2022</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>wait ....</name>
+            <url>wait ....</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <properties>
+        <!-- maven properties -->
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <short-jdk-version>8</short-jdk-version>
+        <jdk-version>1.${short-jdk-version}</jdk-version>
+
+        <redirectTestOutputToFile>true</redirectTestOutputToFile>
+        
+        <maven-bundle-plugin-version>5.1.1</maven-bundle-plugin-version>
+        <maven-javadoc-plugin-version>3.0.1</maven-javadoc-plugin-version>
+        <doxia-module-confluence-version>1.8</doxia-module-confluence-version>
+        <maven-license-plugin-version>1.9.0</maven-license-plugin-version>
+        <slf4j-version>1.7.30</slf4j-version>
+    </properties>
+
+    <developers>
+        <developer>
+            <id>xx1</id>
+            <name>xx1</name>
+            <email>xx1</email>
+            <timezone>xx1</timezone>
+            <roles>
+                <role>Committer</role>
+                <role>PMC Member</role>
+            </roles>
+        </developer>
+
+        <!-- committer add here-->
+    </developers>
+
+    <modules>
+        <module>hikarikeeper-client</module>
+        <module>hikarikeeper-core</module>
+        <module>hikarikeeper-benchmark</module>
+        <module>hikarikeeper-examples</module>
+        <module>hikarikeeper-discovery</module>
+        <module>hikarikeeper-discovery-server</module>
+        <module>hikarikeeper-spring</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j-version}</version>
+            </dependency>
+            
+        </dependencies>
+    </dependencyManagement>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin-version}</version>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>-J-Xmx1g</additionalJOption>
+                    </additionalJOptions>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+            
+        </plugins>
+    </reporting>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin-version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>clirr-maven-plugin</artifactId>
+                    <version>${clirr-maven-plugin-version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${build-helper-maven-plugin-version}</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <version>3.1.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+
+        <plugins>
+            
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <configuration>
+                    <threadCount>1</threadCount>
+                    <reuseForks>false</reuseForks>
+                    <redirectTestOutputToFile>${redirectTestOutputToFile}</redirectTestOutputToFile>
+                    <rerunFailingTestsCount>2</rerunFailingTestsCount>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <additionalJOptions>
+                        <additionalJOption>-J-Xmx1g</additionalJOption>
+                    </additionalJOptions>
+                    <failOnError>false</failOnError>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <configuration>
+                    <locales>en</locales>
+                    <skipDeploy>true</skipDeploy>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.doxia</groupId>
+                        <artifactId>doxia-module-confluence</artifactId>
+                        <version>${doxia-module-confluence-version}</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>site</phase>
+                        <goals>
+                            <goal>site</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            
+
+            <!-- Directory plugin to find parent root directory absolute path -->
+            <plugin>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>0.1</version>
+                <executions>
+                    <execution>
+                        <id>directories</id>
+                        <goals>
+                            <goal>highest-basedir</goal>
+                        </goals>
+                        <phase>validate</phase>
+                        <configuration>
+                            <property>main.basedir</property>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <configuration>
+                    <arguments>-DskipTests</arguments>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.rat</groupId>
+                <artifactId>apache-rat-plugin</artifactId>
+                <configuration>
+                    <numUnapprovedLicenses>0</numUnapprovedLicenses>
+                    <excludeSubProjects>false</excludeSubProjects>
+                    <excludes>
+                        <exclude>**/*.confluence</exclude>
+                        <exclude>**/*.rdf</exclude>
+                        <exclude>**/help.txt</exclude>
+                        <exclude>**/.gitignore</exclude>
+                        <exclude>**/*.thrift</exclude>
+                        <exclude>**/*.json</exclude>
+                        <exclude>**/.idea/**</exclude>
+                        <exclude>**/DISCLAIMER</exclude>
+                        <exclude>**/DEPENDENCIES</exclude>
+                        <exclude>**/KEYS</exclude>
+                        <exclude>**/LICENSE</exclude>
+                        <exclude>**/NOTICE</exclude>
+                        <exclude>**/README</exclude>
+                        <exclude>**/CHANGES</exclude>
+                        <exclude>**/RELEASE-NOTES</exclude>
+                        <exclude>**/generated/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>jdk-8-minus</id>
+            <activation>
+                <jdk>(,1.8]</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <source>${jdk-version}</source>
+                            <target>${jdk-version}</target>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>jdk-9-plus</id>
+            <activation>
+                <jdk>[1.9,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-compiler-plugin</artifactId>
+                        <configuration>
+                            <release>${short-jdk-version}</release>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>staging-repo</id>
+            <repositories>
+                <repository>
+                    <id>staging-repo</id>
+                    <url>https://repository.apache.org/content/groups/staging/</url>
+                </repository>
+            </repositories>
+        </profile>
+    </profiles>
+</project>
+
