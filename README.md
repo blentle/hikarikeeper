@@ -15,7 +15,8 @@ Finally the most import is that hikarikeeper could store lage scale metadata inf
 Supporting these uses led us to a design with a number of unique elements, more akin to a coordination service than a traditional kv store. We will outline some elements of the design in the following sections.
 # Architecture Overview
 Hikarikeeper allows distributed processes to coordinate with each other through a shared hierarchical name space of data registers much like a file system,Unlike normal file systems Hikarikeeper provides its clients with high throughput, low latency, highly available,strong consistent to the registers.
-The performance aspects of Hikarikeeper allow it to be used in large distributed systems
+The performance aspects of Hikarikeeper allow it to be used in large distributed systems.
+
 ![avatar](../images/)
 
 # Roadmap
