@@ -1,6 +1,10 @@
 package org.hikarikeeper.core.protocol;
 
+import org.hikarikeeper.core.engine.MarshalingDelegate;
+
 public class ReqHeader implements Item {
+
+    private MarshalingDelegate delegate;
 
     @Override
     public void seri() {
