@@ -60,6 +60,7 @@
     </developers>
 
     <modules>
+        <module>hikarikeeper-server</module>
         <module>hikarikeeper-client</module>
         <module>hikarikeeper-core</module>
         <module>hikarikeeper-benchmark</module>
