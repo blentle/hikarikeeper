@@ -29,3 +29,10 @@ Now it's time to dig into the full Hikarikeeper API and other guides.
 + provide thrift API.
 # Performance
 To be updated
+
+# Reference
+* [The Raft Consensus Algorithm](https://raft.github.io/)
+* [logcabin-The very first implementation of Raft](https://github.com/logcabin/logcabin)
+* [zookeeper](https://github.com/apache/zookeeper)
+* [etcd](https://github.com/etcd-io/etcd)
+
