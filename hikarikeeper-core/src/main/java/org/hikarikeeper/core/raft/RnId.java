@@ -6,7 +6,7 @@ import java.util.Objects;
 /**
  * a RnId instance represents a unique identity of Raft node
  * @author blentle
- * @since 0.1.o
+ * @since 0.1.0
  *
  */
 public class RnId implements Serializable {

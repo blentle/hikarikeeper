@@ -3,7 +3,7 @@ package org.hikarikeeper.core.raft;
 /**
  * a real raft node contains an endpoint for client (may be ip:port) and a state for replication
  * @author blentle
- * @since 0.1.o
+ * @since 0.1.0
  *
  */
 public class Rnode {

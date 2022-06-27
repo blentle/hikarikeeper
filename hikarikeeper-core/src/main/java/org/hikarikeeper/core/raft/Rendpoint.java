@@ -7,7 +7,7 @@ import java.net.SocketAddress;
  * an endpoint for the access of client, may be ip:port
  *
  * @author blentle
- * @since 0.1.o
+ * @since 0.1.0
  *
  */
 public class Rendpoint {
