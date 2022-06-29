@@ -47,13 +47,13 @@
 
     <developers>
         <developer>
-            <id>xx1</id>
-            <name>xx1</name>
-            <email>xx1</email>
-            <timezone>xx1</timezone>
+            <id>blentle</id>
+            <name>blentle</name>
+            <email>blentle.huan.ren@gmail.com</email>
+            <timezone>beijing</timezone>
             <roles>
                 <role>Committer</role>
-                <role>PMC Member</role>
+                <role>Optimus maintainer</role>
             </roles>
         </developer>
 
