@@ -28,7 +28,7 @@ Now it's time to dig into the full Hikarikeeper API and other guides.
 + provide gRPC API.
 + provide thrift API.
 # Performance
-To be updated
+In Progress
 
 # References
 * [The Raft Consensus Algorithm](https://raft.github.io/)
