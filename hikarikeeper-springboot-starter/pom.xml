@@ -12,11 +12,11 @@
         <version>0.1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>hikarikeeper-spring</artifactId>
+    <artifactId>hikarikeeper-springboot-starter</artifactId>
     <version>0.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>hikarikeeper-spring</name>
+    <name>hikarikeeper-springboot-starter</name>
     <inceptionYear>2022</inceptionYear>
 
     <dependencies>

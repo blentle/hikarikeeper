@@ -42,7 +42,7 @@
         <doxia-module-confluence-version>1.8</doxia-module-confluence-version>
         <maven-license-plugin-version>1.9.0</maven-license-plugin-version>
         <slf4j-version>1.7.30</slf4j-version>
-        <rocksdb-jni-version>7.2.2</rocksdb-jni-version>
+        <rocksdb-jni-version>7.4.5</rocksdb-jni-version>
     </properties>
 
     <developers>
@@ -68,7 +68,7 @@
         <module>hikarikeeper-examples</module>
         <module>hikarikeeper-discovery</module>
         <module>hikarikeeper-discovery-server</module>
-        <module>hikarikeeper-spring</module>
+        <module>hikarikeeper-springboot-starter</module>
     </modules>
 
     <dependencyManagement>
