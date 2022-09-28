@@ -4,29 +4,41 @@ import org.hikarikeeper.core.raft.RnId;
 import org.hikarikeeper.core.raft.RnodeRepository;
 
 /**
- * save data to memory
- * todo:
+ * save data in memory
  */
 public class MemRnodeRepo implements RnodeRepository {
 
+    private long term;
+
+    private RnId votedFor;
+
+    public MemRnodeRepo() {
+        this(0, null);
+    }
+
+    public MemRnodeRepo(long term, RnId votedFor) {
+        this.term = term;
+        this.votedFor = votedFor;
+    }
+
     @Override
     public long getTerm() {
-        return 0;
+        return term;
     }
 
     @Override
     public void setTerm(long term) {
-
+        this.term = term;
     }
 
     @Override
     public RnId getVotedFor() {
-        return null;
+        return votedFor;
     }
 
     @Override
-    public void setVotedFor(RnId candidate) {
-
+    public void setVotedFor(RnId votedFor) {
+        this.votedFor = votedFor;
     }
 
     @Override
