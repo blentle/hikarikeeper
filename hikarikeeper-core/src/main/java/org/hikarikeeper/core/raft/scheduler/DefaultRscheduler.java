@@ -38,7 +38,7 @@ public class DefaultRscheduler implements Rscheduler {
     }
 
     @Override
-    public ElectionTimeoutTask scheduleLogElecTimeoutTask(Callable<?> task) {
+    public ElectionTimeoutTask scheduleLogElecTimeoutTask(Runnable task) {
         long timeout = randGenerator.nextLong(maxElecTimeout - minElecTinout) + minElecTinout;
         ScheduledFuture<?> scheduledFuture = executorService.schedule(task, timeout, TimeUnit.MILLISECONDS);
         return new ElectionTimeoutTask(scheduledFuture);

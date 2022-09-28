@@ -22,7 +22,7 @@ public interface Rscheduler {
      * @param task
      * @return
      */
-    ElectionTimeoutTask scheduleLogElecTimeoutTask(Callable<?> task);
+    ElectionTimeoutTask scheduleLogElecTimeoutTask(Runnable task);
 
     /**
      * stop a scheduler

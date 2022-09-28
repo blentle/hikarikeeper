@@ -1,6 +1,8 @@
 package org.hikarikeeper.core.raft;
 
 
+import org.hikarikeeper.core.raft.scheduler.ElectionTimeoutTask;
+
 /**
  * for a follower node, it needs to know who leader is, who it has voted for and it contains electionTimeout
  * @author blentle
@@ -24,12 +26,12 @@ public class FollowerNode extends RnodeRole {
     /**
      * 选举超时时间.毫秒
      */
-    private final long electionTimeout;
+    private final ElectionTimeoutTask electionTimeout;
     /**
      * replicate log thread, may return something
      */
 
-    public FollowerNode(long term, RnId leaderId, RnId votedFor, long electionTimeout) {
+    public FollowerNode(long term, RnId leaderId, RnId votedFor, ElectionTimeoutTask electionTimeout) {
         super(Rrole.follower, term);
         this.leaderId = leaderId;
         this.votedFor = votedFor;
@@ -44,7 +46,7 @@ public class FollowerNode extends RnodeRole {
         return votedFor;
     }
 
-    public long getElectionTimeout() {
+    public ElectionTimeoutTask getElectionTimeout() {
         return electionTimeout;
     }
 }
