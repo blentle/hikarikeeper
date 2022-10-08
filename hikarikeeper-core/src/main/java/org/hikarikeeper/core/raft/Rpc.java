@@ -1,10 +1,12 @@
 package org.hikarikeeper.core.raft;
 
+import org.hikarikeeper.core.raft.message.VoteRequestReq;
+
 public interface Rpc {
 
     void init();
 
-    void sendRequestVote();
+    void sendRequestVote(VoteRequestReq rpcReq, RnodeGroup group);
 
     void replyRequestVote();
 

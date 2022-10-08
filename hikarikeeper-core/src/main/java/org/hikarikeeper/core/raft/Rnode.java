@@ -1,5 +1,6 @@
 package org.hikarikeeper.core.raft;
 
+import org.hikarikeeper.core.raft.message.VoteRequestReq;
 import org.hikarikeeper.core.raft.repository.RnodeRepoException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +47,6 @@ public class Rnode {
         changeRole(new FollowerNode(repo.getTerm(), null, repo.getVotedFor(), connectorContext.getScheduler().scheduleLogElecTimeoutTask(this::elecTimeout)));
         this.started = true;
 
-
     }
 
     private void changeRole(RnodeRole newRole) throws RnodeRepoException {
@@ -60,6 +60,37 @@ public class Rnode {
     }
 
     private void elecTimeout() {
+        connectorContext.getTaskExecutor().submit(this:: processElecTimeout);
+    }
 
+    private void processElecTimeout() {
+        // leader timeout do nothing
+        if (role.getRole().equals(Rrole.leader)) {
+            //do nothing
+            if (logger.isDebugEnabled())
+                logger.debug("current node: {} is leader, election-timeout,  do nothing", connectorContext.getSelf().getVal());
+            return;
+        }
+        //for follower, begin to elect leader
+        //for candidate, a new elections begin
+        long newTerm = role.getTerm() + 1;
+        role.cancelJob();
+        logger.info("begin to elect a leader");
+        //change role
+        //change self to candidate
+
+        try {
+            changeRole(new CandidateNode(newTerm, connectorContext.getScheduler().scheduleLogElecTimeoutTask(this::elecTimeout)));
+        } catch (RnodeRepoException e) {
+            logger.error("current node: {}, ready to elect a leader, but change role save metadata error", connectorContext.getSelf().getVal(), e);
+        }
+        //request vote rpc
+        VoteRequestReq rpcReq = new VoteRequestReq();
+        rpcReq.setTerm(newTerm);
+        rpcReq.setCandidateId(connectorContext.getSelf());
+        rpcReq.setLastLogIndex(0L);
+        rpcReq.setLastLogTerm(0L);
+        connectorContext.getRpc().sendRequestVote(rpcReq, connectorContext.getGroup());
     }
 }
+

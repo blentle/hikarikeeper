@@ -23,4 +23,7 @@ public abstract class RnodeRole {
     public long getTerm() {
         return term;
     }
+
+    public abstract void cancelJob();
+
 }

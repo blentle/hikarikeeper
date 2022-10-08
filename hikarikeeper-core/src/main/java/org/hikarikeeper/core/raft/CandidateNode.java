@@ -1,6 +1,8 @@
 package org.hikarikeeper.core.raft;
 
 
+import org.hikarikeeper.core.raft.scheduler.ElectionTimeoutTask;
+
 /**
  * for a candidate node, it has tickets from the followers, and it contains electionTimeout
  * finally it has an external method which increase the votes
@@ -17,9 +19,9 @@ public class CandidateNode extends RnodeRole {
     /**
      * 选举超时时间.毫秒
      */
-    private final long electionTimeout;
+    private final ElectionTimeoutTask electionTimeout;
 
-    public CandidateNode(long term, long electionTimeout) {
+    public CandidateNode(long term, ElectionTimeoutTask electionTimeout) {
         this(term, 1, electionTimeout);
     }
 
@@ -29,7 +31,7 @@ public class CandidateNode extends RnodeRole {
 
 
 
-    public CandidateNode(long term, int votes, long electionTimeout) {
+    public CandidateNode(long term, int votes, ElectionTimeoutTask electionTimeout) {
         super(Rrole.candidate, term);
         this.votes = votes;
         this.electionTimeout = electionTimeout;
@@ -39,7 +41,7 @@ public class CandidateNode extends RnodeRole {
         return votes;
     }
 
-    public long getElectionTimeout() {
+    public ElectionTimeoutTask getElectionTimeout() {
         return electionTimeout;
     }
 
@@ -48,8 +50,13 @@ public class CandidateNode extends RnodeRole {
      * @param electionTimeout
      * @return
      */
-    public CandidateNode incrVotes(long electionTimeout) {
+    public CandidateNode incrVotes(ElectionTimeoutTask electionTimeout) {
         return new CandidateNode(this.getTerm(), votes + 1, electionTimeout);
 
+    }
+
+    @Override
+    public void cancelJob() {
+        electionTimeout.cancel();
     }
 }

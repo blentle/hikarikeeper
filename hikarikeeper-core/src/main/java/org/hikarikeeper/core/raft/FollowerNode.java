@@ -49,4 +49,9 @@ public class FollowerNode extends RnodeRole {
     public ElectionTimeoutTask getElectionTimeout() {
         return electionTimeout;
     }
+
+    @Override
+    public void cancelJob() {
+        electionTimeout.cancel();
+    }
 }

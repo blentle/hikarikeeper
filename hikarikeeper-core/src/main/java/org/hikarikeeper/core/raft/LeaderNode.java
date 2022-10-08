@@ -1,6 +1,6 @@
 package org.hikarikeeper.core.raft;
 
-import java.util.concurrent.Callable;
+import org.hikarikeeper.core.raft.scheduler.LogReplicaTask;
 
 /**
  * for a leader node, it needs to sync log to follower.
@@ -12,16 +12,21 @@ public class LeaderNode extends RnodeRole {
     /**
      * replicate log thread, may return something
      */
-    private Callable<?> syncLogTask;
+    private LogReplicaTask logReplicaTask;
 
 
-    public LeaderNode(long term, Callable<?> syncLogTask) {
+    public LeaderNode(long term, LogReplicaTask logReplicaTask) {
         super(Rrole.leader, term);
-        this.syncLogTask = syncLogTask;
+        this.logReplicaTask = logReplicaTask;
     }
 
 
-    public Callable<?> getSyncLogTask() {
-        return syncLogTask;
+    public LogReplicaTask getLogReplicaTask() {
+        return logReplicaTask;
+    }
+
+    @Override
+    public void cancelJob() {
+        logReplicaTask.cancel();
     }
 }
