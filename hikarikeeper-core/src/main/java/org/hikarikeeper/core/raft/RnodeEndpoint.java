@@ -10,19 +10,27 @@ import java.net.SocketAddress;
  * @since 0.1.0
  *
  */
-public class Rendpoint {
+public class RnodeEndpoint {
 
     private final RnId nodeId;
 
     private final SocketAddress addr;
 
-    public Rendpoint(String id, String host, int port) {
+    public RnodeEndpoint(String id, String host, int port) {
         this(RnId.of(id), new InetSocketAddress(host, port));
     }
 
-    public Rendpoint(RnId nodeId, SocketAddress addr) {
+    public RnodeEndpoint(RnId nodeId, SocketAddress addr) {
         //todo: sanity check ,may encapsulates a util class
         this.nodeId = nodeId;
         this.addr = addr;
+    }
+
+    public RnId getNodeId() {
+        return nodeId;
+    }
+
+    public SocketAddress getAddr() {
+        return addr;
     }
 }

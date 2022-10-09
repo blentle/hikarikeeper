@@ -15,7 +15,7 @@ public class Rnode {
 
     private static final Logger logger = LoggerFactory.getLogger(Rnode.class);
 
-    private final Rendpoint rendpoint;
+    private final RnodeEndpoint rnodeEndpoint;
 
     private final ReplicationState replicationState;
 
@@ -27,12 +27,12 @@ public class Rnode {
 
 
 
-    public Rnode(Rendpoint rendpoint) {
-        this(rendpoint, null, null);
+    public Rnode(RnodeEndpoint rnodeEndpoint) {
+        this(rnodeEndpoint, null, null);
     }
 
-    public Rnode(Rendpoint rendpoint, ReplicationState replicationState, ComponentConnectorContext connectorContext) {
-        this.rendpoint = rendpoint;
+    public Rnode(RnodeEndpoint rnodeEndpoint, ReplicationState replicationState, ComponentConnectorContext connectorContext) {
+        this.rnodeEndpoint = rnodeEndpoint;
         this.replicationState = replicationState;
         this.connectorContext = connectorContext;
     }
@@ -90,7 +90,7 @@ public class Rnode {
         rpcReq.setCandidateId(connectorContext.getSelf());
         rpcReq.setLastLogIndex(0L);
         rpcReq.setLastLogTerm(0L);
-        connectorContext.getRpc().sendRequestVote(rpcReq, connectorContext.getGroup());
+        connectorContext.getRpc().sendRequestVote(rpcReq, connectorContext.getGroup().getMemberListExcludeSelf());
     }
 }
 
