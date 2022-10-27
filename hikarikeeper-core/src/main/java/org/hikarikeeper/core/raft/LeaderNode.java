@@ -29,4 +29,9 @@ public class LeaderNode extends RnodeRole {
     public void cancelJob() {
         logReplicaTask.cancel();
     }
+
+    @Override
+    public RnId getLeaderId(RnId self) {
+        return self;
+    }
 }

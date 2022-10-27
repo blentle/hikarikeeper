@@ -1,9 +1,13 @@
 package org.hikarikeeper.core.raft;
 
 import org.hikarikeeper.core.raft.message.VoteRequestReq;
+import org.hikarikeeper.core.raft.message.VoteRequestResp;
 import org.hikarikeeper.core.raft.repository.RnodeRepoException;
+import org.hikarikeeper.core.raft.scheduler.ElectionTimeoutTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.Objects;
 
 /**
  * a real raft node contains an endpoint for client (may be ip:port) and a state for replication
@@ -25,14 +29,17 @@ public class Rnode {
 
     private volatile boolean started;
 
+    private VoteRequestRpcContext voteRequestRpcContext;
 
 
-    public Rnode(RnodeEndpoint rnodeEndpoint) {
-        this(rnodeEndpoint, null, null);
+
+    public Rnode(RnodeEndpoint rnodeEndpoint, VoteRequestRpcContext voteRequestRpcContext) {
+        this(rnodeEndpoint, voteRequestRpcContext, null, null);
     }
 
-    public Rnode(RnodeEndpoint rnodeEndpoint, ReplicationState replicationState, ComponentConnectorContext connectorContext) {
+    public Rnode(RnodeEndpoint rnodeEndpoint, VoteRequestRpcContext voteRequestRpcContext, ReplicationState replicationState, ComponentConnectorContext connectorContext) {
         this.rnodeEndpoint = rnodeEndpoint;
+        this.voteRequestRpcContext = voteRequestRpcContext;
         this.replicationState = replicationState;
         this.connectorContext = connectorContext;
     }
@@ -47,6 +54,40 @@ public class Rnode {
         changeRole(new FollowerNode(repo.getTerm(), null, repo.getVotedFor(), connectorContext.getScheduler().scheduleLogElecTimeoutTask(this::elecTimeout)));
         this.started = true;
 
+    }
+
+    /**
+     * this logic shoud be replaced into rpc module
+     * @param reqMsg
+     */
+    public VoteRequestResp handVoteRequestRpc(VoteRequestReq reqMsg) throws RnodeRepoException {
+        //request term is less than current term, reject
+        long rpcTerm = reqMsg.getTerm();
+        long currentTerm = role.getTerm();
+        if (rpcTerm < currentTerm) {
+            if (logger.isDebugEnabled())
+                logger.debug("term from request vote request rpc:{} is less than current term:{}, reject vote", rpcTerm, currentTerm);
+            return new VoteRequestResp(currentTerm, false);
+        }
+        //otherwise vote
+        // request term is grater than current term, switch current role to follower
+        if (rpcTerm > currentTerm) {
+            beFollower(rpcTerm, reqMsg.getCandidateId(), null, true);
+            return new VoteRequestResp(rpcTerm, true);
+        }
+        // rpcTerm eq currentTerm
+        return voteRequestRpcContext.process(this, role, reqMsg);
+    }
+
+    public void beFollower(long term, RnId votedFor, RnId leaderId, boolean scheduleElecTimeout) throws RnodeRepoException {
+        //cancel timeoutOrReplicationTask
+        this.role.cancelJob();
+        if (Objects.nonNull(leaderId) && (!leaderId.equals(role.getLeaderId(connectorContext.getSelf()))))
+            logger.info("current leader:{}, current term:{}", leaderId, term);
+
+        //recreate job
+        ElectionTimeoutTask timeoutTask = scheduleElecTimeout ? connectorContext.getScheduler().scheduleLogElecTimeoutTask(this::elecTimeout) : ElectionTimeoutTask.NON;
+        changeRole(new FollowerNode(term, leaderId, votedFor, timeoutTask));
     }
 
     private void changeRole(RnodeRole newRole) throws RnodeRepoException {

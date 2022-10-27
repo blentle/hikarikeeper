@@ -26,4 +26,5 @@ public abstract class RnodeRole {
 
     public abstract void cancelJob();
 
+    public abstract RnId getLeaderId(RnId self);
 }

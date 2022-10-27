@@ -59,4 +59,9 @@ public class CandidateNode extends RnodeRole {
     public void cancelJob() {
         electionTimeout.cancel();
     }
+
+    @Override
+    public RnId getLeaderId(RnId self) {
+        return null;
+    }
 }
