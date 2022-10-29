@@ -37,7 +37,7 @@ In Progress
 * [etcd](https://github.com/etcd-io/etcd)
 
 # Acknowledgement
-Click the picture below to apply a licence
+Click the picture below to apply a development licence
 <a href = "https://www.jetbrains.com/shop/eform/opensource?product=ALL"><img src="./images/jetbrains-logo.png"></a>
 
 
