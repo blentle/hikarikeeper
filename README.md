@@ -38,7 +38,7 @@ In Progress
 
 # Acknowledgement
 Click the picture below to apply a licence
-[![](./images/jetbrains-logo.png)](https://www.jetbrains.com/shop/eform/opensource?product=ALL)
+<a href = "https://www.jetbrains.com/shop/eform/opensource?product=ALL"><img src="./images/jetbrains-logo.png"></a>
 
 
 
