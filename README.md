@@ -36,3 +36,9 @@ In Progress
 * [zookeeper](https://github.com/apache/zookeeper)
 * [etcd](https://github.com/etcd-io/etcd)
 
+# Acknowledgement
+Click the picture below to apply a licence
+[![](./images/jetbrains-logo.png)](https://www.jetbrains.com/shop/eform/opensource?product=ALL)
+
+
+
