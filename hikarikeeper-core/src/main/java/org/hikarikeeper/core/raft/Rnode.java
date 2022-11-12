@@ -4,6 +4,7 @@ import org.hikarikeeper.core.raft.message.VoteRequestReq;
 import org.hikarikeeper.core.raft.message.VoteRequestResp;
 import org.hikarikeeper.core.raft.repository.RnodeRepoException;
 import org.hikarikeeper.core.raft.scheduler.ElectionTimeoutTask;
+import org.hikarikeeper.core.raft.scheduler.LogReplicaTask;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,9 +12,9 @@ import java.util.Objects;
 
 /**
  * a real raft node contains an endpoint for client (may be ip:port) and a state for replication
+ *
  * @author blentle
  * @since 0.1.0
- *
  */
 public class Rnode {
 
@@ -30,7 +31,6 @@ public class Rnode {
     private volatile boolean started;
 
     private VoteRequestRpcContext voteRequestRpcContext;
-
 
 
     public Rnode(RnodeEndpoint rnodeEndpoint, VoteRequestRpcContext voteRequestRpcContext) {
@@ -57,12 +57,13 @@ public class Rnode {
     }
 
     /**
-     * this logic shoud be replaced into rpc module
-     * @param reqMsg
+     * this logic should be placed into rpc module
+     *
+     * @param req
      */
-    public VoteRequestResp handVoteRequestRpc(VoteRequestReq reqMsg) throws RnodeRepoException {
+    public VoteRequestResp handleVoteRequestRpc(VoteRequestReq req) throws RnodeRepoException {
         //request term is less than current term, reject
-        long rpcTerm = reqMsg.getTerm();
+        long rpcTerm = req.getTerm();
         long currentTerm = role.getTerm();
         if (rpcTerm < currentTerm) {
             if (logger.isDebugEnabled())
@@ -72,11 +73,62 @@ public class Rnode {
         //otherwise vote
         // request term is grater than current term, switch current role to follower
         if (rpcTerm > currentTerm) {
-            beFollower(rpcTerm, reqMsg.getCandidateId(), null, true);
+            beFollower(rpcTerm, req.getCandidateId(), null, true);
             return new VoteRequestResp(rpcTerm, true);
         }
         // rpcTerm eq currentTerm
-        return voteRequestRpcContext.process(this, role, reqMsg);
+        return voteRequestRpcContext.process(this, role, req);
+    }
+
+    /**
+     * this logic should also be placed into rpc module
+     *
+     * @param resp
+     * @throws RnodeRepoException
+     */
+    public void handleVoteRequestRpcResult(VoteRequestResp resp) throws RnodeRepoException {
+        long responseTerm = resp.getTerm();
+        // if result.getItem() is greater than current role term,make current role follower
+        if (responseTerm > role.getTerm()) {
+            beFollower(resp.getTerm(), null, null, true);
+            return;
+        }
+
+        //if current node role is not candidate, do nothing
+        if (!role.getRole().equals(Rrole.candidate)) {
+            if (logger.isDebugEnabled())
+                logger.debug("received vote-request-response, but current node is not candidate, do nothing.");
+            return;
+        }
+
+        if (responseTerm < role.getTerm())
+            return;
+
+        if (!resp.isVoted())
+            return;
+
+        CandidateNode candidate = (CandidateNode) role;
+        //add self vote count
+        int curVotesCnt = candidate.getVotes() + 1;
+
+        int memberCount = connectorContext.getGroup().getMemberCount();
+
+        if (logger.isDebugEnabled())
+            logger.debug("get votes:{}, member count:{}", curVotesCnt, memberCount);
+        //cancel job
+        role.cancelJob();
+        int quorumVotes = memberCount >>> 1;
+
+        if (curVotesCnt > quorumVotes) {
+            //become leader
+            logger.info("current node:{} get quorumVotes: {}, total node:{}, become leader", rnodeEndpoint.getNodeId(), curVotesCnt, memberCount);
+            changeRole(new LeaderNode(role.getTerm(), scheduleLogReplicaTask()));
+            //todo:add log entry
+        } else {
+            //re vote
+            changeRole(new CandidateNode(role.getTerm(), curVotesCnt, connectorContext.getScheduler().scheduleLogElecTimeoutTask(this::elecTimeout)));
+        }
+
     }
 
     public void beFollower(long term, RnId votedFor, RnId leaderId, boolean scheduleElecTimeout) throws RnodeRepoException {
@@ -96,12 +148,12 @@ public class Rnode {
         RnodeRepository repo = connectorContext.getRepository();
         repo.setTerm(newRole.getTerm());
         if (newRole.getRole().equals(Rrole.follower))
-            repo.setVotedFor(((FollowerNode)newRole).getVotedFor());
+            repo.setVotedFor(((FollowerNode) newRole).getVotedFor());
         this.role = newRole;
     }
 
     private void elecTimeout() {
-        connectorContext.getTaskExecutor().submit(this:: processElecTimeout);
+        connectorContext.getTaskExecutor().submit(this::processElecTimeout);
     }
 
     private void processElecTimeout() {
@@ -132,6 +184,18 @@ public class Rnode {
         rpcReq.setLastLogIndex(0L);
         rpcReq.setLastLogTerm(0L);
         connectorContext.getRpc().sendRequestVote(rpcReq, connectorContext.getGroup().getMemberListExcludeSelf());
+    }
+
+    private LogReplicaTask scheduleLogReplicaTask() {
+        return connectorContext.getScheduler().scheduleLogReplicaTask(this:: submitLogReplicaTask);
+    }
+
+    private void submitLogReplicaTask() {
+        connectorContext.getTaskExecutor().submit(this:: logReplicaTask);
+    }
+
+    private void logReplicaTask() {
+        //todo: do log replication task
     }
 }
 

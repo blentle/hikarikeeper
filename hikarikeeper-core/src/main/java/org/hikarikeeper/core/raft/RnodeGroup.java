@@ -31,4 +31,12 @@ public class RnodeGroup {
         });
         return set;
     }
+
+    /**
+     * all member count
+     * @return
+     */
+    public int getMemberCount() {
+        return memberMap.size();
+    }
 }
