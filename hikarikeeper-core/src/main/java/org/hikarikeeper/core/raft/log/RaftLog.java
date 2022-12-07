@@ -22,4 +22,6 @@ public interface RaftLog {
 
     void close();
 
+    boolean isNewerThan(long lastLogIndex, long lastLogTerm);
+
 }
