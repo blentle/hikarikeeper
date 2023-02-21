@@ -42,7 +42,7 @@
         <doxia-module-confluence-version>1.8</doxia-module-confluence-version>
         <maven-license-plugin-version>1.9.0</maven-license-plugin-version>
         <slf4j-version>1.7.30</slf4j-version>
-        <rocksdb-jni-version>7.7.3</rocksdb-jni-version>
+        <rocksdb-jni-version>7.9.2</rocksdb-jni-version>
         <spring-boot-autoconfigure-version>2.7.3</spring-boot-autoconfigure-version>
     </properties>
 
